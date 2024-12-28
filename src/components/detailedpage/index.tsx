@@ -1,4 +1,4 @@
-import { products } from "../../mocks"
+// import { products } from "../../mocks"
 import ManhwaImage1 from '../../assets/manhwa-image.jpg'
 import styled from "styled-components"
 
