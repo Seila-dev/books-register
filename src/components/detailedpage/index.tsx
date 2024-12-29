@@ -218,13 +218,13 @@ const GenreSection = styled.div`
   
   .categories {
     background: orangered;
-    width: 100px;
+    width: 50px;
     overflow-y: visible;
     border-radius: 5px;
     margin-left: 30px;
   }
   .category-input {
-    min-width: 100px;
+    min-width: 50px;
     padding: 8px;
     border: none;
     background: orangered;
