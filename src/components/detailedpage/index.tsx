@@ -1,6 +1,5 @@
 import { useState, useRef } from "react";
 import ManhwaImage1 from '../../assets/manhwa-image.jpg';
-import ManhwaImage2 from '../../assets/manhwa-image-2.jpeg'
 import styled from "styled-components";
 import { StarRate } from "../StarRate";
 import editIcon from '../../assets/edit.png'
