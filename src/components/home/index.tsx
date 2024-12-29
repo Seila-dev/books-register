@@ -61,7 +61,6 @@ const AddProduct = styled.div`
     @media (max-width: 1020px){
         width: 200px;
         height: 285px;
-
     }
     @media (max-width: 768px){
         width: 150px;
