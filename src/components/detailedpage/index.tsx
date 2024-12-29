@@ -1,16 +1,37 @@
-import { useState, useRef } from "react";
-import ManhwaImage1 from '../../assets/manhwa-image.jpg';
+import { useState, useRef, useEffect } from "react";
 import styled from "styled-components";
 import { StarRate } from "../StarRate";
-import editIcon from '../../assets/edit.png'
+import editIcon from '../../assets/edit.png';
+import { productsDetailed } from "../../mocks";
+import { useParams } from "react-router-dom";
 
 export const DetailedPage = () => {
     const [inputValue, setInputValue] = useState<string>("");
     const inputRef = useRef<HTMLInputElement | null>(null);
+    
+    const { id } = useParams();
+    const [product, setProduct] = useState<{
+        image: string;
+        title: string;
+        id: number;
+        stars: number;
+        genre: string;
+        description: string;
+        startedReading: string;
+        endedReading: string;
+    } | null>(null); // Estado inicial como null
 
-    const handleInputChange = (e: any) => {
+    useEffect(() => {
+        if (id) {
+            const selectedProduct = productsDetailed.find(product => product.id.toString() === id); // Encontre o produto com o id
+            if (selectedProduct) {
+                setProduct(selectedProduct); // Atualize o estado com o produto encontrado
+            }
+        }
+    }, [id])
+
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const newValue = e.target.value;
-
 
         if (newValue.length <= 30) {
             setInputValue(newValue);
@@ -20,30 +41,32 @@ export const DetailedPage = () => {
                 inputRef.current.style.width = `${newWidth}px`
             }
         }
-
-
     };
 
+    if (!product) {
+        return <div>Loading...</div>; // Exiba um carregando enquanto não encontrar o produto
+    }
+
     return (
-        <Section>
+        <Section backgroundImage={product.image}>
             <div className="image-slider">
                 <div className="editProduct">
                     <button><img src={editIcon} alt="edit icon" /></button>
                 </div>
                 <div className="image-prompt">
-                    <img src={ManhwaImage1} alt="Imagem" />
+                    <img src={product.image} alt="Imagem" />
 
                 </div>
-                <h1 className="product-title">Nessa vida eu serei a vilã</h1>
+                <h1 className="product-title">{product.title}</h1>
                 <div className="stars desktop">
-                    <StarRate />
+                    <StarRate productId={product.id.toString()} />
                 </div>
             </div>
             <DataContainer className="container">
                 <div className="hidden-title">
-                    <h1 className="product-title">Nessa vida eu serei a vilã</h1>
+                    <h1 className="product-title">{product.title}</h1>
                     <div className="stars responsive">
-                        <StarRate />
+                        <StarRate productId={product.id.toString()}/>
                     </div>
                 </div>
                 <GenreSection>
@@ -62,18 +85,18 @@ export const DetailedPage = () => {
                 </GenreSection>
                 <div className="description">
                     <h2>Descrição</h2>
-                    <p>Gostei muito do livro, sério, 10/10, amei.</p>
+                    <p>{product.description}</p>
                 </div>
                 <div className="date">
                     <h2>Data de início e final da leitura</h2>
-                    <p>11/22/2424 - 11/22/2025</p>
+                    <p>{product.startedReading} - {product.endedReading}</p>
                 </div>
             </DataContainer>
         </Section>
     );
 };
 
-const Section = styled.section`
+const Section = styled.section<{ backgroundImage: string }>`
   .image-slider {
     // background: linear-gradient(to right, #ccc 25%, black);
     background: var(--almost-black);
@@ -143,7 +166,7 @@ const Section = styled.section`
             background: transparent;
             border: none;
             box-shadow: none;
-            background-image: url(${ManhwaImage1});
+            background-image: url(${props => props.backgroundImage});
             background-position: top center;
             background-size: cover;
             background-repeat: no-repeat;
@@ -157,7 +180,7 @@ const Section = styled.section`
             left: 0;
             width: 100%;
             height: 40%;
-            background: linear-gradient(to top, white, rgba(0, 0, 0, 0));
+            background: linear-gradient(to top, #f2bba6, rgba(0, 0, 0, 0));
         }
         .image-slider img {
             display: none;  
@@ -171,13 +194,13 @@ const Section = styled.section`
             left: 0;
             width: 100%;
             height: 0;
-            background: linear-gradient(to top, white, rgba(0, 0, 0, 0));
+            background: linear-gradient(to top, #f2bba6, rgba(0, 0, 0, 0));
         }
     }
 `;
 
 const DataContainer = styled.div`
-    padding: 0 100px;
+    padding: 30px 100px;
     .hidden-title{
         display: none;
     }
@@ -185,7 +208,7 @@ const DataContainer = styled.div`
         margin: 30px 0;
     }
     @media (max-width: 768px){
-        padding: 0 50px;
+        padding: 30px 50px;
         h2{
             font-size: 18px;
         }
@@ -206,7 +229,7 @@ const DataContainer = styled.div`
         }
     }
     @media (max-width: 550px) {
-        padding: 0 10px;
+        padding: 20px 10px;
         .hidden-title{
             font-size: 15px;
         }

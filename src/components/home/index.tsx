@@ -44,8 +44,6 @@ const Section = styled.section`
     }
 `
 
-
-
 const AddProduct = styled.div`
     background: gray;
     width: 300px;

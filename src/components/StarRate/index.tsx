@@ -1,12 +1,18 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { FaStar } from 'react-icons/fa'
 import styled from 'styled-components';
 
-export function StarRate() {
+export function StarRate({ productId }: { productId: string }) {
 
-    const [ rating, setRating ] = useState<number | null>(null);
+    const savedRating = localStorage.getItem(`rating-${productId}`);
+    const [ rating, setRating ] = useState<number | null>(savedRating ? parseInt(savedRating) : null);
     const [ hoveredRating, setHoveredRating] = useState<number | null>(null);
 
+    useEffect(() => {
+        if (rating !== null) {
+            localStorage.setItem(`rating-${productId}`, rating.toString())
+        }
+    }, [rating, productId])
     const renderStars = () => {
         return [...Array(5)].map((_, index) => {
             const currentRate = index + 1;

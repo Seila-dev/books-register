@@ -12,7 +12,7 @@ export const Product = () => {
                         <Link to={`/product/${product.id}`}><img src={product.image} alt="product image" /></Link>
                     </div>
                     <div className="stars">
-                        <StarRate />
+                        <StarRate productId={product.id.toString()}/>
                     </div>
                 </ProductElement>
             ))}
@@ -31,6 +31,7 @@ const ProductElement = styled.div`
         width: 100%;
         max-height: 425px;
         height: 100%;
+        box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
     }
     
     .stars{

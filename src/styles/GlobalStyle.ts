@@ -35,9 +35,13 @@ export const GlobalStyle = createGlobalStyle`
     }
     
     body{
-        background: var(--white);
+        background: linear-gradient(#f2c7a6, #f2b5a6);
         color: black;
         font-family: "Poppins", serif;
         min-width: 375px;
+        min-height: 100vh;
+        @media(max-width: 375px){
+            min-height: 118vh;
+        }
     }
 `
