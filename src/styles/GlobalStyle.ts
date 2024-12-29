@@ -23,7 +23,7 @@ export const GlobalStyle = createGlobalStyle`
         color: black;
     }
 
-    button{
+    button, input{
         font-family: "Poppins", serif;
     }
     
