@@ -27,7 +27,7 @@ const MainContainer = styled.main`
         font-size: 30px;
     }
     @media(max-width: 544px){
-        padding: 5px;
+        padding: 0;
         .section-title{
             font-size: 20px;
         }
@@ -39,7 +39,7 @@ const Section = styled.section`
     grid-template-columns: 1fr 1fr 1fr;
     justify-items: center;
     @media (max-width: 550px){
-        padding: 10px;
+        padding: 0gpx;
         
     }
 `

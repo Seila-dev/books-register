@@ -1,7 +1,9 @@
 import { useState, useRef } from "react";
 import ManhwaImage1 from '../../assets/manhwa-image.jpg';
+import ManhwaImage2 from '../../assets/manhwa-image-2.jpeg'
 import styled from "styled-components";
 import { StarRate } from "../StarRate";
+import editIcon from '../../assets/edit.png'
 
 export const DetailedPage = () => {
     const [inputValue, setInputValue] = useState<string>("");
@@ -26,16 +28,25 @@ export const DetailedPage = () => {
     return (
         <Section>
             <div className="image-slider">
+                <div className="editProduct">
+                    <button><img src={editIcon} alt="edit icon" /></button>
+                </div>
                 <div className="image-prompt">
                     <img src={ManhwaImage1} alt="Imagem" />
-                    
+
                 </div>
                 <h1 className="product-title">Nessa vida eu serei a vilã</h1>
-                    <div className="stars">
+                <div className="stars desktop">
                     <StarRate />
-                    </div>
+                </div>
             </div>
             <DataContainer className="container">
+                <div className="hidden-title">
+                    <h1 className="product-title">Nessa vida eu serei a vilã</h1>
+                    <div className="stars responsive">
+                        <StarRate />
+                    </div>
+                </div>
                 <GenreSection>
                     <h2>Gênero</h2>
                     <div className="categories">
@@ -65,12 +76,30 @@ export const DetailedPage = () => {
 
 const Section = styled.section`
   .image-slider {
-    background: linear-gradient(to right, #ccc 25%, black);
+    // background: linear-gradient(to right, #ccc 25%, black);
+    background: var(--almost-black);
     height: 300px;
     position: relative;
     width: 100%;
     margin-bottom: 150px;
   }
+  .image-slider .editProduct {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding: 15px;
+  }   
+  .image-slider .editProduct button {
+    padding: 10px;
+    cursor: pointer;
+    background: white;
+    border: 1px solid var(--black);
+    border-radius: 50%;
+    img{
+        display: flex;
+        width: 30px;
+    }
+  }  
   .image-prompt {
     width: 230px;
     position: absolute;
@@ -90,7 +119,7 @@ const Section = styled.section`
     font-size: 35px;
     color: white;
   }
-    .stars{
+    .stars.desktop{
         position: absolute;
         top: 60%;
         left: 550px;
@@ -100,20 +129,27 @@ const Section = styled.section`
             font-size: 25px;
             width: 350px;
         }
-        .stars, .image-slider .product-title{
+        .stars.desktop, .image-slider .product-title{
             left: 400px;
         }
     }
     @media (max-width: 768px){
-        .image-slider .product-title {
-            color: black;
+        .stars.responsive{
+            display: flex;
+        }
+        .image-slider .product-title, .stars.desktop {
+            display: none;
         }
         .image-slider {
+            background: transparent;
+            border: none;
+            box-shadow: none;
             background-image: url(${ManhwaImage1});
-            background-position: center center;
+            background-position: top center;
             background-size: cover;
             background-repeat: no-repeat;
-            margin-bottom: 30px;
+            margin-bottom: 0;
+            height: 500px;
         }
         .image-slider::after {
             content: '';
@@ -128,12 +164,53 @@ const Section = styled.section`
             display: none;  
         }
     }
+    @media (max-width: 367px) {
+        .image-slider::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 0;
+            background: linear-gradient(to top, white, rgba(0, 0, 0, 0));
+        }
+    }
 `;
 
 const DataContainer = styled.div`
     padding: 0 100px;
+    .hidden-title{
+        display: none;
+    }
     .description{
         margin: 30px 0;
+    }
+    @media (max-width: 768px){
+        padding: 0 50px;
+        h2{
+            font-size: 18px;
+        }
+        .hidden-title{
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            border-bottom: 1px solid gray;
+            padding: 20px;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+        .hidden-title h1{
+            margin-bottom: 10px;
+        }
+    }
+    @media (max-width: 550px) {
+        padding: 0 10px;
+        .hidden-title{
+            font-size: 15px;
+        }
     }
 `
 

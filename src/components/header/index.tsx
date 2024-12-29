@@ -2,6 +2,7 @@ import menuIcon from '../../assets/menu.png'
 import closeIcon from '../../assets/close.png'
 import styled from 'styled-components'
 import { useState } from 'react'
+import { Link } from 'react-router-dom'
 
 export const Header = () => {
     const [ toggleActive, setToggleActive ] = useState<boolean>(false);
@@ -23,7 +24,7 @@ export const Header = () => {
                 </div>
                 <p className='aba-text'>Qual aba abrir agora?</p>
                 <ul>
-                    <li>Livro</li>
+                    <Link to="/"><li>Biblioteca</li></Link>
                     <li>Mangás</li>
                     <button className='add-category-btn'>+</button>
                 </ul>
@@ -58,7 +59,7 @@ const HeaderElement = styled.header`
 `
 
 const BurguerContainer = styled.div<{ IsOpened: boolean }>`
-    background: var(--very-light-purple);
+    background: var(--purple);
     display: flex;
     flex-direction: column;
     position: fixed;
@@ -83,7 +84,7 @@ const BurguerContainer = styled.div<{ IsOpened: boolean }>`
     }
     ul li, .add-category-btn{
         width: 100%;
-        background: var(--gray);
+        background: var(--almost-black);
         color: #fff;
         padding: 20px;
         border-radius: 10px;
@@ -95,10 +96,11 @@ const BurguerContainer = styled.div<{ IsOpened: boolean }>`
         padding: 5px;
         border: none;
         cursor: pointer;
-        background: var(--light-purple);
+        background: var(--almost-white);
         transition: 0.1s ease-out;
+        color: var(--black);
         &:hover{
-            background: var(--purple);
+            background: var(--light-purple);
         }
     }
     @media(max-width: 562px){
