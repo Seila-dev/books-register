@@ -1,22 +1,28 @@
-import { products } from "../../mocks"
 import { StarRate } from "../StarRate"
 import styled from "styled-components"
 import { Link } from "react-router-dom"
 
-export const Product = () => {
+interface ProductProps {
+    product: {
+        id: number,
+        title: string,
+        image: string,
+    };
+}
+
+export const Product = ({ product }: ProductProps) => {
     return (
-        <>
-            {products.map((product) => (
-                <ProductElement key={product.id}>
-                    <div className="image-prompt">
-                        <Link to={`/product/${product.id}`}><img src={product.image} alt="product image" /></Link>
-                    </div>
-                    <div className="stars">
-                        <StarRate productId={product.id.toString()}/>
-                    </div>
-                </ProductElement>
-            ))}
-        </>
+        <ProductElement>
+            <div className="image-prompt">
+                <Link to={`/product/${product.id}`}>
+                    <img src={product.image} alt="product image" />
+                </Link>
+            </div>
+            <h3>{product.title}</h3>
+            <div className="stars">
+                <StarRate productId={product.id.toString()} />
+            </div>
+        </ProductElement>
     )
 }
 

@@ -1,8 +1,7 @@
-import styled from 'styled-components'
-import { Product } from '../product'
-// import { products, productsDetailed } from '../../mocks'
-import { useState } from 'react'
-import { useForm } from 'react-hook-form'
+import styled from 'styled-components';
+import { Product } from '../product';
+import { useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
 import closeIcon from '../../assets/close.png';
 
 export const Home = () => {
@@ -13,23 +12,43 @@ export const Home = () => {
 
     const { register, handleSubmit, formState: { errors } } = useForm<Data>();
     const [updateEvent, setUpdateEvent] = useState<boolean>(false);
+    const [products, setProducts] = useState<Array<{ id: number, title: string, image: string }>>([]);
+
+    useEffect(() => {
+        const savedProducts = localStorage.getItem('products');
+        if (savedProducts) {
+            setProducts(JSON.parse(savedProducts));
+        }
+    }, []);
 
     const handleSubmitForm = (data: Data) => {
-        console.log(data)
-        return data
-    }
+        const newProduct = {
+            id: products.length + 1,
+            title: data.title,
+            image: data.image,
+        };
+
+        const updatedProducts = [...products, newProduct];
+        setProducts(updatedProducts);
+    
+        // Salva o novo produto no localStorage
+        localStorage.setItem('products', JSON.stringify(updatedProducts));
+    
+        setUpdateEvent(false);
+    };    
 
     const updateEvents = () => {
         setUpdateEvent(!updateEvent);
     }
-
 
     return (
         <>
             <MainContainer>
                 <h2 className='section-title'>Biblioteca - Todos os conteúdos</h2>
                 <Section>
-                    <Product />
+                    {products.map(product => (
+                        <Product key={product.id} product={product} />
+                    ))}
 
                     <AddProduct onClick={updateEvents} >
                         <div><p>+</p></div>
@@ -56,6 +75,18 @@ export const Home = () => {
                                 }
                             />
                             {errors.title && <ErrorMessage>é necessário escrever algo aqui</ErrorMessage>}
+                            <label htmlFor="text">Imagem *</label>
+                            <input
+                                type="text"
+                                id="image"
+                                placeholder="URL da imagem"
+                                {
+                                ...register("image", {
+                                    required: true
+                                })
+                                }
+                            />
+                            {errors.title && <ErrorMessage>é necessário fornecer uma URL de imagem</ErrorMessage>}
 
                             <button type="submit" className="save-btn" onClick={handleSubmit(handleSubmitForm)}>Salvar alterações</button>
                         </div>
@@ -103,6 +134,7 @@ const AddProduct = styled.div`
     border-radius: 5px;
     cursor: pointer;
     box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+    z-index: 0;
     &:hover div{
         opacity: 0.8;
     }

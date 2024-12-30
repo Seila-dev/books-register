@@ -1,66 +1,72 @@
 import { useEffect, useState } from 'react';
-import { FaStar } from 'react-icons/fa'
+import { FaStar } from 'react-icons/fa';
 import styled from 'styled-components';
 
 export function StarRate({ productId }: { productId: string }) {
 
-    const savedRating = localStorage.getItem(`rating-${productId}`);
-    const [ rating, setRating ] = useState<number | null>(savedRating ? parseInt(savedRating) : null);
-    const [ hoveredRating, setHoveredRating] = useState<number | null>(null);
+    // Estado para armazenar o rating
+    const [rating, setRating] = useState<number>(0); 
+    const [hoveredRating, setHoveredRating] = useState<number | null>(null);
 
+    // Lê o rating do localStorage sempre que o componente for montado
+    useEffect(() => {
+        // Tenta ler o rating do localStorage quando o componente for carregado
+        const savedRating = localStorage.getItem(`rating-${productId}`);
+        if (savedRating) {
+            setRating(parseInt(savedRating)); // Define o rating do localStorage
+        }
+    }, [productId]); // Este efeito será executado sempre que o `productId` mudar
+
+    // Atualiza o localStorage toda vez que o rating for alterado
     useEffect(() => {
         if (rating !== null) {
-            localStorage.setItem(`rating-${productId}`, rating.toString())
+            localStorage.setItem(`rating-${productId}`, rating.toString());
         }
-    }, [rating, productId])
+    }, [rating, productId]); // Re-armazenar rating no localStorage sempre que mudar
+
+    // Renderiza as estrelas
     const renderStars = () => {
         return [...Array(5)].map((_, index) => {
             const currentRate = index + 1;
-            
-            
 
-            return (      
-                    <Label key={currentRate}>
+            return (
+                <Label key={currentRate}>
                     <StarInput
-                    type='radio'
-                    name='rate'
-                    value={currentRate}
-                    onClick={() => setRating(currentRate)}/>
-                        <StyledStar
-                        color={currentRate <= (hoveredRating !== null ? hoveredRating : (rating ?? 0)) ? "orange" : "grey"}
-                        className='star'
-                        onMouseEnter={() => setHoveredRating(currentRate)}
-                        onMouseLeave={() => setHoveredRating(null)}
-                        />
-                    </Label>
+                        type="radio"
+                        name="rate"
+                        value={currentRate}
+                        checked={currentRate === rating} // Marca a estrela clicada
+                        onClick={() => setRating(currentRate)} // Atualiza o rating ao clicar
+                    />
+                    <StyledStar
+                        color={currentRate <= (hoveredRating ?? rating) ? "orange" : "grey"} // Define a cor da estrela
+                        className="star"
+                        onMouseEnter={() => setHoveredRating(currentRate)} // Durante o hover, atualiza a cor
+                        onMouseLeave={() => setHoveredRating(null)} // Reseta o hover
+                    />
+                </Label>
+            );
+        });
+    };
 
-            )
-        })
-    }
-
-    return (
-
-        <>
-            {renderStars()}
-        </>
-    );
+    return <>{renderStars()}</>;
 }
 
 const StarInput = styled.input`
     opacity: 0;
     display: none;
-`
+`;
 
 const Label = styled.label`
-    .star{
+    .star {
         cursor: pointer;
         transition: 0.15s ease;
     }
-`
+`;
 
 const StyledStar = styled(FaStar)`
     font-size: 45px;
-    @media (max-width: 1020px){
+    @media (max-width: 1020px) {
         font-size: 25px;
     }
     @media (max-width: 768px) {
@@ -69,4 +75,4 @@ const StyledStar = styled(FaStar)`
     @media (max-width: 550px) {
         font-size: 18px;
     }
-`
+`;

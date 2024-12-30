@@ -2,12 +2,9 @@ import React, { useState, useRef, useEffect } from "react";
 import styled from "styled-components";
 import { StarRate } from "../StarRate";
 import editIcon from '../../assets/edit.png';
-import { productsDetailed } from "../../mocks";
 import { useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import closeIcon from '../../assets/close.png';
-
-
 
 export const DetailedPage = () => {
     interface Data {
@@ -20,33 +17,45 @@ export const DetailedPage = () => {
     const { register, handleSubmit, formState: { errors } } = useForm<Data>();
     const [inputValue, setInputValue] = useState<string>("");
     const [updateEvent, setUpdateEvent] = useState<boolean>(false);
-    const inputRef = useRef<HTMLInputElement | null>(null);
-    
-    const { id } = useParams();
     const [product, setProduct] = useState<{
-        image: string;
-        title: string;
-        id: number;
-        stars: number;
-        genre: string;
-        description: string;
-        startedReading: string;
-        endedReading: string;
-    } | null>(null); // Estado inicial como null
+        id: number,
+        title: string,
+        image: string,
+        description: string,
+        startedReading: string,
+        endedReading: string
+        | null
+    }>({
+        id: 0,
+        title: "",
+        image: "",
+        description: "",
+        startedReading: "",
+        endedReading: ""
+    });
+    const inputRef = useRef<HTMLInputElement | null>(null);
+
+    const { id } = useParams();
+    // const [product, setProduct] = useState<{
+    //     image: string;
+    //     title: string;
+    //     id: number;
+    //     genre: string;
+    //     description: string;
+    //     startedReading: string;
+    //     endedReading: string;
+    // } | null>(null); 
 
     // Carregar dados do localStorage
     useEffect(() => {
-        if (id) {
-            const storedProduct = localStorage.getItem(`product-${id}`);
-            if (storedProduct) {
-                setProduct(JSON.parse(storedProduct));
-            } else {
-                // Caso o produto não esteja no localStorage, procure nos produtos detalhados
-                // Se a lista de produtos detalhados estiver disponível no seu código
-                const selectedProduct = productsDetailed.find(product => product.id.toString() === id);
-                if (selectedProduct) {
-                    setProduct(selectedProduct);
-                }
+        const savedProducts = localStorage.getItem('products');
+        if (savedProducts) {
+            const products = JSON.parse(savedProducts);
+
+            const foundProduct = products.find((product: { id: number }) => product.id === parseInt(id!));
+
+            if (foundProduct) {
+                setProduct(foundProduct);
             }
         }
     }, [id]);
@@ -82,18 +91,20 @@ export const DetailedPage = () => {
             // Salvar os dados no localStorage
             localStorage.setItem(`product-${updatedProduct.id}`, JSON.stringify(updatedProduct));
 
-            // Atualizar os produtos detalhados
-            const updatedProducts = productsDetailed.map(prod =>
-                prod.id === updatedProduct.id ? updatedProduct : prod
-            );
-
-            console.log("produtos atualizados:", updatedProducts);
+            const savedProducts = localStorage.getItem('products');
+            if (savedProducts) {
+                const products = JSON.parse(savedProducts);
+                const updatedProducts = products.map((product: any) =>
+                    product.id === updatedProduct.id ? updatedProduct : product
+                );
+                localStorage.setItem('products', JSON.stringify(updatedProducts));
+            }
         }
-    }
+    };
 
-    if (!product) {
-        return <div>Loading...</div>; // Exiba um carregando enquanto não encontrar o produto
-    }
+    console.log(product)
+
+
 
     return (
         <Section backgroundImage={product.image}>
@@ -113,7 +124,7 @@ export const DetailedPage = () => {
                 <div className="hidden-title">
                     <h1 className="product-title">{product.title}</h1>
                     <div className="stars responsive">
-                        <StarRate productId={product.id.toString()}/>
+                        <StarRate productId={product.id.toString()} />
                     </div>
                 </div>
                 <GenreSection>
@@ -140,59 +151,59 @@ export const DetailedPage = () => {
                 </div>
             </DataContainer>
             {updateEvent &&
-            <Lightbox>
-                <div className="white-box">
-                    <div className="close-container">
-                        <h3>Update Events</h3>
-                        <img src={closeIcon} alt="Close icon" onClick={() => setUpdateEvent(!updateEvent)} />
-                    </div>
-                    <p>* indica obrigatório</p>
-                    <label htmlFor="text">Título *</label>
-                    <input 
-                    type="text" 
-                    id="title" 
-                    placeholder="título"
-                    maxLength={30}
-                    {
-                        ...register ("title", {
-                            required: true
-                        })
-                    }
-                    />
-                    {errors.title && <ErrorMessage>é necessário escrever algo aqui</ErrorMessage>}
-                    <label htmlFor="description">Descrição</label>
-                    <textarea  
-                    id="description" 
-                    placeholder="descrição"
-                    {
-                        ...register ("description")
-                    }
-                    />
-                    
-                    <label htmlFor="start">inicio de leitura </label>
-                    <input 
-                    type="text"
-                    id="start" 
-                    maxLength={10} 
-                    placeholder="DD/MM/AAAA"
-                    {
-                        ...register ("startedReading")
-                    }
-                    />
-                    <label htmlFor="end">Fim de leitura</label>
-                    <input 
-                    type="text" 
-                    id="end" 
-                    maxLength={10} 
-                    placeholder="DD/MM/AAAA"
-                    {
-                        ...register ("endedReading")
-                    }
-                    />
+                <Lightbox>
+                    <div className="white-box">
+                        <div className="close-container">
+                            <h3>Update Events</h3>
+                            <img src={closeIcon} alt="Close icon" onClick={() => setUpdateEvent(!updateEvent)} />
+                        </div>
+                        <p>* indica obrigatório</p>
+                        <label htmlFor="text">Título *</label>
+                        <input
+                            type="text"
+                            id="title"
+                            placeholder="título"
+                            maxLength={30}
+                            {
+                            ...register("title", {
+                                required: true
+                            })
+                            }
+                        />
+                        {errors.title && <ErrorMessage>é necessário escrever algo aqui</ErrorMessage>}
+                        <label htmlFor="description">Descrição</label>
+                        <textarea
+                            id="description"
+                            placeholder="descrição"
+                            {
+                            ...register("description")
+                            }
+                        />
 
-                    <button type="submit" className="save-btn" onClick={handleSubmit(handleSubmitForm)}>Salvar alterações</button>
-                </div>
-            </Lightbox>
+                        <label htmlFor="start">inicio de leitura </label>
+                        <input
+                            type="text"
+                            id="start"
+                            maxLength={10}
+                            placeholder="DD/MM/AAAA"
+                            {
+                            ...register("startedReading")
+                            }
+                        />
+                        <label htmlFor="end">Fim de leitura</label>
+                        <input
+                            type="text"
+                            id="end"
+                            maxLength={10}
+                            placeholder="DD/MM/AAAA"
+                            {
+                            ...register("endedReading")
+                            }
+                        />
+
+                        <button type="submit" className="save-btn" onClick={handleSubmit(handleSubmitForm)}>Salvar alterações</button>
+                    </div>
+                </Lightbox>
             }
         </Section>
     );
@@ -394,6 +405,7 @@ const Lightbox = styled.div`
     }
     .white-box .close-container img{
         width: 40px;
+        cursor: pointer;
     }
     .white-box label{
         margin: 5px 0;
