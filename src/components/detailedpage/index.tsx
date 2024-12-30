@@ -1,12 +1,25 @@
-import { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import styled from "styled-components";
 import { StarRate } from "../StarRate";
 import editIcon from '../../assets/edit.png';
 import { productsDetailed } from "../../mocks";
 import { useParams } from "react-router-dom";
+import { useForm } from "react-hook-form";
+import closeIcon from '../../assets/close.png';
+
+
 
 export const DetailedPage = () => {
+    interface Data {
+        title: string;
+        description?: string;
+        startedReading?: string;
+        endedReading?: string;
+    }
+
+    const { register, handleSubmit, formState: { errors } } = useForm<Data>();
     const [inputValue, setInputValue] = useState<string>("");
+    const [updateEvent, setUpdateEvent] = useState<boolean>(false);
     const inputRef = useRef<HTMLInputElement | null>(null);
     
     const { id } = useParams();
@@ -21,14 +34,22 @@ export const DetailedPage = () => {
         endedReading: string;
     } | null>(null); // Estado inicial como null
 
+    // Carregar dados do localStorage
     useEffect(() => {
         if (id) {
-            const selectedProduct = productsDetailed.find(product => product.id.toString() === id); // Encontre o produto com o id
-            if (selectedProduct) {
-                setProduct(selectedProduct); // Atualize o estado com o produto encontrado
+            const storedProduct = localStorage.getItem(`product-${id}`);
+            if (storedProduct) {
+                setProduct(JSON.parse(storedProduct));
+            } else {
+                // Caso o produto não esteja no localStorage, procure nos produtos detalhados
+                // Se a lista de produtos detalhados estiver disponível no seu código
+                const selectedProduct = productsDetailed.find(product => product.id.toString() === id);
+                if (selectedProduct) {
+                    setProduct(selectedProduct);
+                }
             }
         }
-    }, [id])
+    }, [id]);
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const newValue = e.target.value;
@@ -37,11 +58,38 @@ export const DetailedPage = () => {
             setInputValue(newValue);
 
             if (inputRef.current) {
-                const newWidth = Math.max(80, newValue.length * 10);;
+                const newWidth = Math.max(80, newValue.length * 10);
                 inputRef.current.style.width = `${newWidth}px`
             }
         }
     };
+
+    const updateEvents = () => {
+        setUpdateEvent(!updateEvent);
+    }
+
+    const handleSubmitForm = (data: Data) => {
+        if (product) {
+            const updatedProduct = {
+                ...product,
+                title: data.title,
+                description: data.description || "",
+                startedReading: data.startedReading || "",
+                endedReading: data.endedReading || ""
+            };
+            setProduct(updatedProduct);
+
+            // Salvar os dados no localStorage
+            localStorage.setItem(`product-${updatedProduct.id}`, JSON.stringify(updatedProduct));
+
+            // Atualizar os produtos detalhados
+            const updatedProducts = productsDetailed.map(prod =>
+                prod.id === updatedProduct.id ? updatedProduct : prod
+            );
+
+            console.log("produtos atualizados:", updatedProducts);
+        }
+    }
 
     if (!product) {
         return <div>Loading...</div>; // Exiba um carregando enquanto não encontrar o produto
@@ -51,11 +99,10 @@ export const DetailedPage = () => {
         <Section backgroundImage={product.image}>
             <div className="image-slider">
                 <div className="editProduct">
-                    <button><img src={editIcon} alt="edit icon" /></button>
+                    <button onClick={() => updateEvents()}><img src={editIcon} alt="edit icon" /></button>
                 </div>
                 <div className="image-prompt">
                     <img src={product.image} alt="Imagem" />
-
                 </div>
                 <h1 className="product-title">{product.title}</h1>
                 <div className="stars desktop">
@@ -78,7 +125,7 @@ export const DetailedPage = () => {
                             className="category-input"
                             type="text"
                             value={inputValue}
-                            onChange={handleInputChange} // Atualiza o valor e ajusta a largura
+                            onChange={handleInputChange}
                             placeholder="gênero"
                         />
                     </div>
@@ -92,9 +139,67 @@ export const DetailedPage = () => {
                     <p>{product.startedReading} - {product.endedReading}</p>
                 </div>
             </DataContainer>
+            {updateEvent &&
+            <Lightbox>
+                <div className="white-box">
+                    <div className="close-container">
+                        <h3>Update Events</h3>
+                        <img src={closeIcon} alt="Close icon" onClick={() => setUpdateEvent(!updateEvent)} />
+                    </div>
+                    <p>* indica obrigatório</p>
+                    <label htmlFor="text">Título *</label>
+                    <input 
+                    type="text" 
+                    id="title" 
+                    placeholder="título"
+                    maxLength={30}
+                    {
+                        ...register ("title", {
+                            required: true
+                        })
+                    }
+                    />
+                    {errors.title && <ErrorMessage>é necessário escrever algo aqui</ErrorMessage>}
+                    <label htmlFor="description">Descrição</label>
+                    <textarea  
+                    id="description" 
+                    placeholder="descrição"
+                    {
+                        ...register ("description")
+                    }
+                    />
+                    
+                    <label htmlFor="start">inicio de leitura </label>
+                    <input 
+                    type="text"
+                    id="start" 
+                    maxLength={10} 
+                    placeholder="DD/MM/AAAA"
+                    {
+                        ...register ("startedReading")
+                    }
+                    />
+                    <label htmlFor="end">Fim de leitura</label>
+                    <input 
+                    type="text" 
+                    id="end" 
+                    maxLength={10} 
+                    placeholder="DD/MM/AAAA"
+                    {
+                        ...register ("endedReading")
+                    }
+                    />
+
+                    <button type="submit" className="save-btn" onClick={handleSubmit(handleSubmitForm)}>Salvar alterações</button>
+                </div>
+            </Lightbox>
+            }
         </Section>
     );
 };
+
+// Styled-components e outros componentes seguem sem alterações
+
 
 const Section = styled.section<{ backgroundImage: string }>`
   .image-slider {
@@ -226,10 +331,11 @@ const DataContainer = styled.div`
         }
         .hidden-title h1{
             margin-bottom: 10px;
+            text-align: center;
         }
     }
     @media (max-width: 550px) {
-        padding: 20px 10px;
+        padding: 10px 10px;
         .hidden-title{
             font-size: 15px;
         }
@@ -260,3 +366,55 @@ const GenreSection = styled.div`
     }
   }
 `;
+
+const Lightbox = styled.div`
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: rgba(0, 0, 0, 0.5);
+    
+    .white-box{
+        background: white;
+        display: flex;
+        flex-direction: column;
+        width: 500px;
+        height: 500px;
+        padding: 20px;
+        margin: 10px;   
+    }
+    .white-box .close-container{
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+    .white-box .close-container img{
+        width: 40px;
+    }
+    .white-box label{
+        margin: 5px 0;
+    }
+    .white-box input, textarea{
+        padding: 10px;
+        outline: none;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+    }
+    .white-box .save-btn{
+        margin-top: 20px;
+        padding: 10px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        background: #ccc;
+    }
+`
+
+const ErrorMessage = styled.p`
+    color: red;
+    font-size: 12px;
+`

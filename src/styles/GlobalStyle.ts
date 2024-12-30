@@ -30,12 +30,12 @@ export const GlobalStyle = createGlobalStyle`
         color: black;
     }
 
-    button, input{
+    button, input, textarea{
         font-family: "Poppins", serif;
     }
     
     body{
-        background: linear-gradient(#f2c7a6, #f2b5a6);
+        background: white;
         color: black;
         font-family: "Poppins", serif;
         min-width: 375px;
