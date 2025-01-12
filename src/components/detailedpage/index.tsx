@@ -1,119 +1,84 @@
-import React, { useState, useRef, useEffect } from "react";
+import { useState, useEffect } from "react";
 import styled from "styled-components";
 import { StarRate } from "../StarRate";
 import editIcon from '../../assets/edit.png';
 import { useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import closeIcon from '../../assets/close.png';
+import api from '../../services/api';
 
 export const DetailedPage = () => {
     interface Data {
+        id: number;
         title: string;
+        image: string;
+        stars: number;
         description?: string;
-        startedReading?: string;
-        endedReading?: string;
+        startedreading?: string;
+        endedreading?: string;
     }
 
-    const { register, handleSubmit, formState: { errors } } = useForm<Data>();
-    const [inputValue, setInputValue] = useState<string>("");
+    const { register, handleSubmit, setValue, formState: { errors } } = useForm<Data>();
     const [updateEvent, setUpdateEvent] = useState<boolean>(false);
-    const [product, setProduct] = useState<{
-        id: number,
-        title: string,
-        image: string,
-        description: string,
-        startedReading: string,
-        endedReading: string
-        | null
-    }>({
-        id: 0,
-        title: "",
-        image: "",
-        description: "",
-        startedReading: "",
-        endedReading: ""
-    });
-    const inputRef = useRef<HTMLInputElement | null>(null);
+    const [product, setProduct] = useState<Data | null>(null);
 
     const { id } = useParams();
-    // const [product, setProduct] = useState<{
-    //     image: string;
-    //     title: string;
-    //     id: number;
-    //     genre: string;
-    //     description: string;
-    //     startedReading: string;
-    //     endedReading: string;
-    // } | null>(null); 
 
-    // Carregar dados do localStorage
+    async function getProduct() {
+        const response = await api.get(`/products/${id}`);
+        setProduct(response.data);
+    }
+
     useEffect(() => {
-        const savedProducts = localStorage.getItem('products');
-        if (savedProducts) {
-            const products = JSON.parse(savedProducts);
-
-            const foundProduct = products.find((product: { id: number }) => product.id === parseInt(id!));
-
-            if (foundProduct) {
-                setProduct(foundProduct);
-            }
+        if (id) {
+            getProduct();
         }
     }, [id]);
 
-    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const newValue = e.target.value;
-
-        if (newValue.length <= 30) {
-            setInputValue(newValue);
-
-            if (inputRef.current) {
-                const newWidth = Math.max(80, newValue.length * 10);
-                inputRef.current.style.width = `${newWidth}px`
-            }
+    useEffect(() => {
+        if (product) {
+            setValue('title', product.title);
+            setValue('description', product.description || '');
+            setValue('startedreading', product.startedreading || '');
+            setValue('endedreading', product.endedreading || '');
         }
-    };
+    }, [product, setValue]);
 
     const updateEvents = () => {
         setUpdateEvent(!updateEvent);
     }
 
-    const handleSubmitForm = (data: Data) => {
-        if (product) {
-            const updatedProduct = {
-                ...product,
-                title: data.title,
-                description: data.description || "",
-                startedReading: data.startedReading || "",
-                endedReading: data.endedReading || ""
-            };
-            setProduct(updatedProduct);
+    const handleSubmitForm = async (data: Data) => {
+        try {
+            await api.put(`/products/${id}`, data);
 
-            // Salvar os dados no localStorage
-            localStorage.setItem(`product-${updatedProduct.id}`, JSON.stringify(updatedProduct));
-
-            const savedProducts = localStorage.getItem('products');
-            if (savedProducts) {
-                const products = JSON.parse(savedProducts);
-                const updatedProducts = products.map((product: any) =>
-                    product.id === updatedProduct.id ? updatedProduct : product
-                );
-                localStorage.setItem('products', JSON.stringify(updatedProducts));
-            }
+            // Atualiza o estado local com os novos dados
+            setProduct(prevState => ({
+                ...prevState!,
+                ...data
+            }));
+            setUpdateEvent(false); // Fecha o modo de edição
+        } catch (error) {
+            console.log(error);
         }
     };
 
-    console.log(product)
+    if (!product) {
+        return <div>Loading...</div>
+    }
 
-
+    // Monta a URL da imagem para que ela seja acessível
+    const imageUrl = product.image ? `http://localhost:3000/public/${product.image}` : ''; // Ajuste o caminho conforme necessário
 
     return (
-        <Section backgroundImage={product.image}>
+        <Section backgroundImage={imageUrl}>
             <div className="image-slider">
                 <div className="editProduct">
                     <button onClick={() => updateEvents()}><img src={editIcon} alt="edit icon" /></button>
                 </div>
                 <div className="image-prompt">
-                    <img src={product.image} alt="Imagem" />
+                    {/* Renderiza a imagem com o caminho completo */}
+                    <img src={imageUrl} alt="Imagem do produto" />
                 </div>
                 <h1 className="product-title">{product.title}</h1>
                 <div className="stars desktop">
@@ -130,15 +95,7 @@ export const DetailedPage = () => {
                 <GenreSection>
                     <h2>Gênero</h2>
                     <div className="categories">
-                        <input
-                            ref={inputRef}
-                            id="txt"
-                            className="category-input"
-                            type="text"
-                            value={inputValue}
-                            onChange={handleInputChange}
-                            placeholder="gênero"
-                        />
+                        <p>Aventura</p>
                     </div>
                 </GenreSection>
                 <div className="description">
@@ -147,7 +104,7 @@ export const DetailedPage = () => {
                 </div>
                 <div className="date">
                     <h2>Data de início e final da leitura</h2>
-                    <p>{product.startedReading} - {product.endedReading}</p>
+                    <p>{product.startedreading} - {product.endedreading}</p>
                 </div>
             </DataContainer>
             {updateEvent &&
@@ -164,31 +121,25 @@ export const DetailedPage = () => {
                             id="title"
                             placeholder="título"
                             maxLength={30}
-                            {
-                            ...register("title", {
+                            {...register("title", {
                                 required: true
-                            })
-                            }
+                            })}
                         />
                         {errors.title && <ErrorMessage>é necessário escrever algo aqui</ErrorMessage>}
                         <label htmlFor="description">Descrição</label>
                         <textarea
                             id="description"
                             placeholder="descrição"
-                            {
-                            ...register("description")
-                            }
+                            {...register("description")}
                         />
 
-                        <label htmlFor="start">inicio de leitura </label>
+                        <label htmlFor="start">Início de leitura</label>
                         <input
                             type="text"
                             id="start"
                             maxLength={10}
                             placeholder="DD/MM/AAAA"
-                            {
-                            ...register("startedReading")
-                            }
+                            {...register("startedreading")}
                         />
                         <label htmlFor="end">Fim de leitura</label>
                         <input
@@ -196,9 +147,7 @@ export const DetailedPage = () => {
                             id="end"
                             maxLength={10}
                             placeholder="DD/MM/AAAA"
-                            {
-                            ...register("endedReading")
-                            }
+                            {...register("endedreading")}
                         />
 
                         <button type="submit" className="save-btn" onClick={handleSubmit(handleSubmitForm)}>Salvar alterações</button>
@@ -208,6 +157,8 @@ export const DetailedPage = () => {
         </Section>
     );
 };
+
+// Styled-components continuam iguais
 
 // Styled-components e outros componentes seguem sem alterações
 
@@ -296,7 +247,7 @@ const Section = styled.section<{ backgroundImage: string }>`
             left: 0;
             width: 100%;
             height: 40%;
-            background: linear-gradient(to top, #f2bba6, rgba(0, 0, 0, 0));
+            background: linear-gradient(to top, #fff, rgba(0, 0, 0, 0));
         }
         .image-slider img {
             display: none;  
@@ -355,28 +306,11 @@ const DataContainer = styled.div`
 
 const GenreSection = styled.div`
     display: flex;
-  
-  .categories {
-    background: orangered;
-    width: 50px;
-    overflow-y: visible;
-    border-radius: 5px;
-    margin-left: 30px;
-  }
-  .category-input {
-    min-width: 50px;
-    padding: 8px;
-    border: none;
-    background: orangered;
-    color: white;
-    outline: none;
-    border-radius: 5px;
-    transition: width 0.2s ease;
-    &::placeholder {
-      color: #ccc;
+    align-items: center;
+    p{
+        margin: 20px
     }
-  }
-`;
+`
 
 const Lightbox = styled.div`
     position: fixed;
