@@ -29,8 +29,8 @@ export const Product = ({ product }: ProductProps) => {
         <ProductElement>
             <div className="image-prompt">
                 <Link to={`/product/${product.id}`} className="link">
-                    <img src={`${product.image}`} alt="product image" />
-                    {/* <img src={`http://localhost:3000/public/${product.image}`} alt="imagem" /> */}
+                    {/* <img src={`${product.image}`} alt="product image" /> */}
+                    <img src={`https://books-register-api.onrender.com/public/${product.image}`} alt="imagem" />
                 </Link>
                 <div className="delete-icon" >
                     <img src={trashIcon} alt="Delete icon" onClick={() => deleteProduct(product.id)} />
