@@ -28,7 +28,7 @@ export const Product = ({ product }: ProductProps) => {
         <ProductElement>
             <div className="image-prompt">
                 <Link to={`/product/${product.id}`} className="link">
-                    <img src={`https://books-register-api.onrender.com/uploads/${product.image}`} alt="product image" />
+                    <img src={`https://books-register-api.onrender.com/public/${product.image}`} alt="product image" />
                 </Link>
                 <div className="delete-icon" >
                     <img src={trashIcon} alt="Delete icon" onClick={() => deleteProduct(product.id)} />
@@ -81,9 +81,10 @@ const ProductElement = styled.div`
     }
 
     .product-title{
-        text-align: center;
-        display: none;
-        margin: 10px 0;
+        
+        margin: 5px 0;
+        font-size: 15px;
+        opacity: 0.7;
     }
     
     .stars{

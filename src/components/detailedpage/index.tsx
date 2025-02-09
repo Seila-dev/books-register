@@ -66,7 +66,7 @@ export const DetailedPage = () => {
         return <div>Loading...</div>
     }
 
-    const imageUrl = product.image ? `https://books-register-api.onrender.com/uploads/${product.image}` : ''
+    const imageUrl = product.image ? `https://books-register-api.onrender.com/public/${product.image}` : ''
     return (
         <Section backgroundImage={imageUrl}>
             <div className="image-slider">
@@ -285,6 +285,7 @@ const DataContainer = styled.div`
         .hidden-title h1{
             margin-bottom: 10px;
             text-align: center;
+            font-weight: 400;
         }
     }
     @media (max-width: 550px) {
