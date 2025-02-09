@@ -52,12 +52,11 @@ export const DetailedPage = () => {
         try {
             await api.put(`/products/${id}`, data);
 
-            // Atualiza o estado local com os novos dados
             setProduct(prevState => ({
                 ...prevState!,
                 ...data
             }));
-            setUpdateEvent(false); // Fecha o modo de edição
+            setUpdateEvent(false);
         } catch (error) {
             console.log(error);
         }
@@ -67,9 +66,7 @@ export const DetailedPage = () => {
         return <div>Loading...</div>
     }
 
-    // Monta a URL da imagem para que ela seja acessível
-    const imageUrl = product.image ? `http://localhost:3000/public/${product.image}` : ''; // Ajuste o caminho conforme necessário
-
+    const imageUrl = product.image ? `https://books-register-api.onrender.com/uploads/${product.image}` : ''
     return (
         <Section backgroundImage={imageUrl}>
             <div className="image-slider">
@@ -77,7 +74,6 @@ export const DetailedPage = () => {
                     <button onClick={() => updateEvents()}><img src={editIcon} alt="edit icon" /></button>
                 </div>
                 <div className="image-prompt">
-                    {/* Renderiza a imagem com o caminho completo */}
                     <img src={imageUrl} alt="Imagem do produto" />
                 </div>
                 <h1 className="product-title">{product.title}</h1>
@@ -155,13 +151,8 @@ export const DetailedPage = () => {
                 </Lightbox>
             }
         </Section>
-    );
-};
-
-// Styled-components continuam iguais
-
-// Styled-components e outros componentes seguem sem alterações
-
+    )
+}
 
 const Section = styled.section<{ backgroundImage: string }>`
   .image-slider {

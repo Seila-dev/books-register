@@ -32,6 +32,8 @@ export const Home = () => {
         getProducts();
     }, [])
 
+    
+
     const handleSubmitForm = async (data: Data) => {
         try {
             const formData = new FormData();
