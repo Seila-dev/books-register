@@ -24,8 +24,6 @@ export const Product = ({ product }: ProductProps) => {
         
     }
 
-    console.log(product.image)
-
     return (
         <ProductElement>
             <div className="image-prompt">
