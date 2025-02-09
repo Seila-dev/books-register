@@ -39,36 +39,33 @@ export const Home = () => {
             const formData = new FormData();
             formData.append("title", data.title);
 
-            // Envia a imagem se um arquivo foi selecionado
             if (imageFile) {
                 formData.append("file", imageFile);
             }
 
-            // Envia o arquivo para o backend para salvar
-            const uploadResponse = await api.post('/upload', formData, {
+            const response = await api.post('/products', formData, {
                 headers: { 'Content-Type': 'multipart/form-data' }
             });
 
-            const imagePath = uploadResponse.data.imagePath;  // Nome ou caminho da imagem salvo no backend
+            // const imagePath = uploadResponse.data.imagePath;
 
-            // Cria o produto no banco de dados com o título e a imagem
-            const productData = {
-                title: data.title,
-                image: imagePath  // Caminho ou nome da imagem
-            };
+            // const productData = {
+            //     title: data.title,
+            //     image: imagePath 
+            // };
 
-            const response = await api.post('/products', productData);
+            // const response = await api.post('/products', productData);
 
             const newProduct = {
-                id: response.data.id,  // Usar o id gerado pelo backend
+                id: response.data.id, 
                 title: response.data.title,
                 image: response.data.image,
             };
 
             // Atualiza a lista de produtos
-            setProducts([...products, newProduct]);
-            setUpdateEvent(false);  // Fecha o formulário de adição
-            setImageFile(null);  // Limpa o estado da imagem
+            setProducts(prevProducts => [...prevProducts, newProduct]);
+            setUpdateEvent(false); 
+            setImageFile(null);  
         } catch (error) {
             console.log(error);
         }
