@@ -132,8 +132,8 @@ const ProductElement = styled.div`
             justify-content: center;
         }
         .image-prompt .link img{
-            min-height: 165px;
-            max-height: 165px;
+            min-height: 135px;
+            max-height: 135px;
             width: 110px;
             height: 100%;
         }

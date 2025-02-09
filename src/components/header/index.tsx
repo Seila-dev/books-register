@@ -16,7 +16,7 @@ export const Header = () => {
         <HeaderElement>
             <nav>
                 <img src={menuIcon} alt="menu" onClick={toggleBurguer} className='menu-icons menu' />
-                <h1><Link to="/">Em desenvolvimento</Link></h1>
+                <h1><Link to="/">Books Register</Link></h1>
             </nav>
             <BurguerContainer IsOpened={toggleActive}>
                 <div className="close-icon-container">
