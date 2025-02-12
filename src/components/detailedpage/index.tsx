@@ -171,15 +171,15 @@ export const DetailedPage = () => {
                     <GenreSection>
                         <h3>Gêneros</h3>
                         <div className="categories">
-                            { category.length > 0 ? (
+                            {/* {
                                 category.map((categoryItem, index) => (
                                     <div className="category" key={index}>
                                         <p>{categoryItem.name}</p>
                                     </div>
                                 ))
-                            ) : (
-                                <></>
-                            )}
+                            } : {
+                                <p>Sem categorias</p>
+                            } */}
                             {categoryEvent &&
                                 <div className="category">
                                     <input
