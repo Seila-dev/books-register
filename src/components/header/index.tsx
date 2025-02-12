@@ -1,4 +1,4 @@
-import menuIcon from '../../assets/menu.png'
+// import menuIcon from '../../assets/menu.png'
 import closeIcon from '../../assets/close.png'
 import styled from 'styled-components'
 import { useState } from 'react'
@@ -15,7 +15,8 @@ export const Header = () => {
         <>
         <HeaderElement>
             <nav>
-                <img src={menuIcon} alt="menu" onClick={toggleBurguer} className='menu-icons menu' />
+                <svg className="header-svg-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" data-t="menu-svg" aria-labelledby="menu-svg" aria-hidden="true" role="img" onClick={toggleBurguer}><title id="menu-svg">Menu</title><path d="M21 4a1 1 0 0 1 0 2H3a1 1 0 0 1 0-2h18zm0 7a1 1 0 0 1 0 2H3a1 1 0 0 1 0-2h18zm0 7a1 1 0 0 1 0 2H3a1 1 0 0 1 0-2h18z"></path></svg>
+                {/* <img src={menuIcon} alt="menu" onClick={toggleBurguer} className='menu-icons menu' /> */}
                 <h1><Link to="/">Books Register</Link></h1>
             </nav>
             <BurguerContainer IsOpened={toggleActive}>
@@ -34,7 +35,7 @@ export const Header = () => {
 }
 
 const HeaderElement = styled.header`
-    padding: 20px 0;
+    padding: 10px 0;
 
     .menu-icons{
         width: 50px;
@@ -46,6 +47,16 @@ const HeaderElement = styled.header`
         align-items: center;
         justify-content: space-between;
         margin: 0 50px;
+    }
+
+    nav h1 a{
+        color: white;
+    }
+
+    nav .header-svg-icon{
+        width: 25px;
+        cursor: pointer;
+        fill: white;
     }
     @media (max-width: 550px){
         nav{
@@ -60,6 +71,8 @@ const HeaderElement = styled.header`
 const BurguerContainer = styled.div<{ IsOpened: boolean }>`
     background: gray;
     box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px;
+    background: rgb(7,8,8);
+background: linear-gradient(360deg, rgba(7,8,8,1) 0%, rgba(87,87,87,1) 100%);
     display: flex;
     flex-direction: column;
     position: fixed;

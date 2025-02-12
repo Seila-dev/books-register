@@ -35,9 +35,10 @@ export const GlobalStyle = createGlobalStyle`
     }
     
     body{
-        background: white;
-        color: black;
-        font-family: "Poppins", serif;
+        // background: #7081ea;
+        background:rgb(0, 0, 0);
+        font-family: "Lato", Helvetica Neue, helvetica, sans-serif;
+        color: white;
         min-width: 375px;
         min-height: 100vh;
         @media(max-width: 375px){

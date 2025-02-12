@@ -228,6 +228,7 @@ const Lightbox = styled.div`
         outline: none;
         border-radius: 5px;
         border: 1px solid #ccc;
+        color: black;
     }
     .white-box .save-btn{
         margin-top: 20px;
@@ -237,6 +238,11 @@ const Lightbox = styled.div`
         cursor: pointer;
         background: #ccc;
     }
+
+    label, h3{
+        color: black;
+    }
+
 `
 
 const ErrorMessage = styled.p`
