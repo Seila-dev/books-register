@@ -108,10 +108,10 @@ export const DetailedPage = () => {
                   console.log("Categoria criada:", response.data);
                   
                   // Atualize o estado com as categorias do produto (não apenas a categoria criada)
-                  setCategory(prev => {
-                    const updatedCategories = response.data.product.categories || [];
-                    return updatedCategories;  // ou [...prev, createdCategory] caso queira adicionar a nova
-                  });
+                //   setCategory(prev => {
+                //     const updatedCategories = response.data.product.categories || [];
+                //     return updatedCategories;  // ou [...prev, createdCategory] caso queira adicionar a nova
+                //   });
                   
                   
                   
