@@ -2,15 +2,10 @@ import { createGlobalStyle } from "styled-components";
 
 export const GlobalStyle = createGlobalStyle`
     :root{
-        // --gray: #1e2124;
-        // --pink: #fb6f92;
-        // --very-light-purple: #fbd0ff;
-        // --light-purple: #c19af2;
-        // --purple: #8a66b9;
         --white: #fff;
         --black: #000;
-        --purple: #7229e0;
-        --light-purple: #9d88b2;
+        --secondary: #7229e0;
+        --tertiary: #9d88b2;
         --almost-white: #fef7ff;
         --almost-black: #1f1926;
 
@@ -35,14 +30,9 @@ export const GlobalStyle = createGlobalStyle`
     }
     
     body{
-        // background: #7081ea;
-        background:rgb(0, 0, 0);
         font-family: "Lato", Helvetica Neue, helvetica, sans-serif;
-        color: white;
-        min-width: 375px;
+        background: linear-gradient(to right top, #000, #00043a);
+        max-width: 100vw;
         min-height: 100vh;
-        @media(max-width: 375px){
-            min-height: 118vh;
-        }
     }
 `

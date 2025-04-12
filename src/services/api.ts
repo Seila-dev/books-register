@@ -1,7 +1,19 @@
 import axios from 'axios';
+import { parseCookies } from 'nookies';
 
 const api = axios.create({
-    baseURL: 'https://books-register-api.onrender.com'
+    baseURL: 'https://books-register-api-production.up.railway.app/'
 });
+
+const { 'joysystem.token': token } = parseCookies()
+
+if (token) {
+    fetch('https://books-register-api-production.up.railway.app/users', {
+        headers: {
+            'Content-Type': 'application/json',
+            authorization: `Bearer ${token}`
+        },
+    })
+}
 
 export default api
