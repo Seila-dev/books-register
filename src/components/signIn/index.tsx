@@ -92,9 +92,9 @@ const SignInComponent = styled.main`
         width: 100%;
         flex-direction: column;
         box-shadow: rgba(0, 0, 0, 0.2) 0px 12px 28px 0px, rgba(0, 0, 0, 0.1) 0px 2px 4px 0px, rgba(255, 255, 255, 0.05) 0px 0px 0px 1px inset;
-        background: #e27d38;
+        background: transparent;
         padding: 30px;
-        color: white;
+        color: black;
         text-align: center;
         border-radius: 10px;
         border-top: 10px solid var(--secondary);
@@ -121,7 +121,7 @@ const SignInComponent = styled.main`
         border: 1px solid #ccc;
         outline: none;
         background: transparent;
-        color: white;
+        color: black;
         border-radius: 5px;
     }
     form button{
