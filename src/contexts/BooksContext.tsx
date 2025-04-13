@@ -13,6 +13,7 @@ interface BooksContextData {
   createBook: (data: CreateBookData) => Promise<Book>;
   updateBook: (data: UpdateBookData) => Promise<Book>;
   deleteBook: (id: string) => Promise<void>;
+  updateBookRating: (bookId: string, newRating: number) => Promise<void>;
 }
 
 const BooksContext = createContext<BooksContextData>({} as BooksContextData);
@@ -219,6 +220,37 @@ export const BooksProvider: React.FC<BooksProviderProps> = ({ children }) => {
       setLoading(false);
     }
   }, []);
+
+  const updateBookRating = useCallback(async (bookId: string, newRating: number) => {
+    setLoading(true);
+    setError(null);
+
+    try {
+      const response = await api.patch(`/books/${bookId}/rating`, { rating: newRating }, {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (response.status === 200) {
+        const updatedBook = response.data;
+        // Atualize o estado com a nova avaliação
+        setBooks(prevBooks => 
+          prevBooks.map(book => 
+            book.id === updatedBook.id ? updatedBook : book
+          )
+        );
+      } else {
+        setError('Erro ao atualizar avaliação');
+      }
+    } catch (err) {
+      console.error('Erro ao atualizar avaliação', err);
+      setError('Não foi possível atualizar a avaliação. Tente novamente mais tarde.');
+    } finally {
+      setLoading(false);
+    }
+  }, [token]);
   
   // Carregar livros automaticamente quando o componente for montado
   useEffect(() => {
@@ -237,6 +269,7 @@ export const BooksProvider: React.FC<BooksProviderProps> = ({ children }) => {
         createBook,
         updateBook,
         deleteBook,
+        updateBookRating
   
       }}
     >

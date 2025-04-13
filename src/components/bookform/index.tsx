@@ -2,6 +2,7 @@ import React, { useState, useEffect, FormEvent } from 'react';
 import { useBooks } from '../../contexts/BooksContext';
 import { useCategories } from '../../contexts/CategoriesContext';
 import { Book } from '../../types/bookData';
+import styled from 'styled-components';
 
 interface BookFormProps {
   book?: Book;
@@ -95,7 +96,7 @@ export const BookForm: React.FC<BookFormProps> = ({ book, onSuccess }) => {
   };
   
   return (
-    <form onSubmit={handleSubmit}>
+    <Form onSubmit={handleSubmit}>
       <div>
         <label htmlFor="title">Título *</label>
         <input
@@ -184,6 +185,92 @@ export const BookForm: React.FC<BookFormProps> = ({ book, onSuccess }) => {
       <button type="submit" disabled={loading}>
         {loading ? 'Salvando...' : book ? 'Atualizar Livro' : 'Adicionar Livro'}
       </button>
-    </form>
+    </Form>
   );
 };
+
+const Form = styled.form`
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  gap: 16px;
+  padding: 30px;
+  border-radius: 10px;
+  width: 90%;
+  max-width: 600px;
+  z-index: 1000;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  background-color: #f9f9f9;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+  label {
+    font-weight: bold;
+    margin-bottom: 4px;
+  }
+
+  input,
+  textarea,
+  button {
+    font-size: 16px;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+
+  input:focus,
+  textarea:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 4px rgba(0, 123, 255, 0.5);
+  }
+
+  textarea {
+    resize: vertical;
+    min-height: 100px;
+  }
+
+  button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+
+    &:hover {
+      background-color: #0056b3;
+    }
+
+    &:disabled {
+      background-color: #ccc;
+      cursor: not-allowed;
+    }
+  }
+
+  div {
+    display: flex;
+    flex-direction: column;
+  }
+
+  img {
+    margin-top: 8px;
+    border-radius: 4px;
+  }
+
+  .categories {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+
+    div {
+      display: flex;
+      align-items: center;
+
+      input {
+        margin-right: 8px;
+      }
+    }
+  }
+`;

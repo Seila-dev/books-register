@@ -31,7 +31,7 @@ export const GlobalStyle = createGlobalStyle`
     
     body{
         font-family: "Lato", Helvetica Neue, helvetica, sans-serif;
-        background: linear-gradient(to right top, #000, #00043a);
+        background: linear-gradient(to right top, #c8c8c8, #f2f2f2);
         max-width: 100vw;
         min-height: 100vh;
     }

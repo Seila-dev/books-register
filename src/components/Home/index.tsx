@@ -1,4 +1,3 @@
-import React from 'react'
 import styled from 'styled-components'
 import { BooksComponent } from '../BooksComponent'
 import { useBooks } from '../../contexts/BooksContext';
@@ -28,10 +27,10 @@ const Container = styled.div`
     align-items: center;
     min-height: 100%;
     h1 {
-        color: white;
+        color: black;
     }
 
     p {
-        color: white;
+        color: black;
     }
 `

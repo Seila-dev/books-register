@@ -1,15 +1,16 @@
 import { useBooks } from '../../contexts/BooksContext';
-import { useCategories } from '../../contexts/CategoriesContext';
 import styled from 'styled-components';
+import { StarRating } from '../StarRating';
+import { Link } from 'react-router-dom';
 
 export const Books = () => {
-  const { books, loading, error, deleteBook } = useBooks();
-  const { categories } = useCategories();
+  const { books, loading, error, deleteBook, updateBookRating } = useBooks();
+  // const { categories } = useCategories();
 
-  const getCategoryName = (categoryId: string) => {
-    const category = categories.find(cat => cat.id === categoryId);
-    return category ? category.name : '';
-  };
+  // const getCategoryName = (categoryId: string) => {
+  //   const category = categories.find(cat => cat.id === categoryId);
+  //   return category ? category.name : '';
+  // };
 
   const handleDelete = async (id: string) => {
     if (window.confirm('Tem certeza que deseja excluir este livro?')) {
@@ -18,6 +19,28 @@ export const Books = () => {
       } catch (err) {
         // Erro tratado no context
       }
+    }
+  };
+
+  const handleRatingChange = async (bookId: string, newRating: number) => {
+    // Encontre o livro correspondente ao ID
+    const bookToUpdate = books.find(b => b.id === bookId);
+
+    if (!bookToUpdate) {
+      console.error('Erro: Livro não encontrado');
+      return;
+    }
+
+    // Atualiza a avaliação de forma otimista no estado local
+    const originalRating = bookToUpdate.rating;
+    bookToUpdate.rating = newRating;
+
+    try {
+      // Atualiza a avaliação no backend
+      await updateBookRating(bookId, newRating);
+    } catch (error) {
+      // Se ocorrer um erro, reverte para a avaliação anterior
+      bookToUpdate.rating = originalRating;
     }
   };
 
@@ -30,40 +53,25 @@ export const Books = () => {
     <Container>
       <Title>Meus Livros</Title>
       <BooksGrid>
-        {books.map(book => (
+        {books.map((book) => (
           <BookCard key={book.id}>
-            <BookTitle>{book.title}</BookTitle>
+              <BookTitle>{book.title}</BookTitle>
 
             {book.coverImage && (
               <Cover 
-              src={`${book.coverImage}`} 
-              alt={`Capa de ${book.title}`}  
+                src={`${book.coverImage}`} 
+                alt={`Capa de ${book.title}`}  
+              />
+            )}
+
+            <StarRating 
+              rating={book.rating || 0} 
+              onRate={(newRating) => handleRatingChange(book.id, newRating)} 
             />
-            )}
-
-            {book.description && <Description>{book.description}</Description>}
-
-            {book.rating !== null && book.rating !== undefined && (
-              <InfoText>Avaliação: {book.rating} / 5</InfoText>
-            )}
-
-            {book.startDate && (
-              <InfoText>Início: {new Date(book.startDate).toLocaleDateString()}</InfoText>
-            )}
-
-            {book.finishDate && (
-              <InfoText>Fim: {new Date(book.finishDate).toLocaleDateString()}</InfoText>
-            )}
-
-            {book.categories.length > 0 && (
-              <InfoText>
-                Categorias: {book.categories.map(cat => getCategoryName(cat.categoryId)).join(', ')}
-              </InfoText>
-            )}
 
             <Actions>
               <DeleteButton onClick={() => handleDelete(book.id)}>Excluir</DeleteButton>
-              {/* <EditLink to={`/books/edit/${book.id}`}>Editar</EditLink> */}
+              <VisualizeButton to={`/book/${book.id}`}>Visualizar</VisualizeButton>
             </Actions>
           </BookCard>
         ))}
@@ -75,7 +83,7 @@ export const Books = () => {
 // Styled Components
 
 const Container = styled.div`
-  color: #fff;
+  color: black;
   display: flex;
   flex-direction: column;
   min-height: 100%;
@@ -85,7 +93,12 @@ const Container = styled.div`
 
 const Title = styled.h2`
   margin-bottom: 20px;
-  font-size: 2rem;
+  font-size: 1.5rem;
+  font-size: 24px;
+
+  @media (max-width: 500px) {
+    font-size: 1.1rem;
+  }
 `;
 
 const BooksGrid = styled.div`
@@ -95,10 +108,10 @@ const BooksGrid = styled.div`
 `;
 
 const BookCard = styled.div`
-  background-color: #1e1e1e;
   border: 1px solid #333;
   border-radius: 8px;
   padding: 16px;
+  background: transparent;
   width: 280px;
   display: flex;
   flex-direction: column;
@@ -115,16 +128,6 @@ const Cover = styled.img`
   width: 100%;
   height: auto;
   border-radius: 4px;
-`;
-
-const Description = styled.p`
-  font-size: 0.9rem;
-  color: #ccc;
-`;
-
-const InfoText = styled.div`
-  font-size: 0.85rem;
-  color: #aaa;
 `;
 
 const Actions = styled.div`
@@ -155,3 +158,27 @@ const StatusMessage = styled.div`
   color: #ddd;
 `;
 
+const VisualizeButton = styled(Link)`
+  padding: 6px 12px;
+  background-color: #1976d2;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  text-decoration: none;
+  text-align: center;
+  cursor: pointer;
+  transition: background 0.2s ease;
+  width: 100%;
+  display: block;
+  text-align: center;
+  &:hover {
+    background-color: #1565c0;
+  }
+  &:active {
+    background-color: #0d47a1;
+  }
+  &:focus {
+    outline: none;
+  }
+`
