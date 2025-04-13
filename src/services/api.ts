@@ -5,7 +5,7 @@ const api = axios.create({
     baseURL: 'https://books-register-api-production.up.railway.app/'
 });
 
-const { 'joysystem.token': token } = parseCookies()
+const { 'books-register.token': token } = parseCookies()
 
 if (token) {
     fetch('https://books-register-api-production.up.railway.app/users', {

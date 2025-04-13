@@ -1,8 +1,16 @@
 import React from 'react'
 import styled from 'styled-components'
-import BooksComponent from '../BooksComponent'
+import { BooksComponent } from '../BooksComponent'
+import { useBooks } from '../../contexts/BooksContext';
+import { useCategories } from '../../contexts/CategoriesContext';
 
-export const Home: React.FC = () => {
+export const Home = () => {
+    const { loading: booksLoading } = useBooks();
+    const { loading: categoriesLoading } = useCategories();
+
+  if (booksLoading || categoriesLoading) {
+    return <p>Carregando...</p>;
+  }
     return (
         <Container>
             <BooksComponent />
@@ -18,7 +26,7 @@ const Container = styled.div`
     display: flex;
     flex-direction: column;
     align-items: center;
-    min-height: 100vh;
+    min-height: 100%;
     h1 {
         color: white;
     }

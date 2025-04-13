@@ -13,7 +13,6 @@ interface BooksContextData {
   createBook: (data: CreateBookData) => Promise<Book>;
   updateBook: (data: UpdateBookData) => Promise<Book>;
   deleteBook: (id: string) => Promise<void>;
-  coverUrlPrefix: string;
 }
 
 const BooksContext = createContext<BooksContextData>({} as BooksContextData);
@@ -29,7 +28,7 @@ export const BooksProvider: React.FC<BooksProviderProps> = ({ children }) => {
   const { 'books-register.token': token } = parseCookies()
   
   // Prefixo da URL para imagens de capa
-  const coverUrlPrefix = 'https://books-register-api-production.up.railway.app/public/'
+ 
   
   const fetchBooks = useCallback(async () => {
     setLoading(true);
@@ -238,7 +237,7 @@ export const BooksProvider: React.FC<BooksProviderProps> = ({ children }) => {
         createBook,
         updateBook,
         deleteBook,
-        coverUrlPrefix
+  
       }}
     >
       {children}
